@@ -1,0 +1,42 @@
+{
+  "entities": {
+    "users": {
+        "title": "User",
+        "description": "User profile information",
+        "type": "object",
+        "properties": {
+            "uid": { "type": "string" },
+            "email": { "type": "string" },
+            "displayName": { "type": "string" },
+            "photoURL": { "type": "string" },
+            "createdAt": { "type": "string", "format": "date-time" }
+        },
+        "required": ["uid", "email"]
+    },
+    "cartItems": {
+        "title": "Cart Item",
+        "description": "Product in user's shopping cart",
+        "type": "object",
+        "properties": {
+            "productId": { "type": "integer" },
+            "name": { "type": "string" },
+            "price": { "type": "integer" },
+            "quantity": { "type": "integer" },
+            "image": { "type": "string" },
+            "userId": { "type": "string" },
+            "addedAt": { "type": "string", "format": "date-time" }
+        },
+        "required": ["productId", "quantity", "userId"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+        "schema": "users",
+        "description": "User profile documents"
+    },
+    "/users/{userId}/cart/{itemId}": {
+        "schema": "cartItems",
+        "description": "User's shopping cart subcollection"
+    }
+  }
+}
