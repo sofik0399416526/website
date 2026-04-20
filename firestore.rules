@@ -24,7 +24,7 @@ service cloud.firestore {
       allow create: if isOwner(userId) && isValidUser(request.resource.data);
       allow update: if isOwner(userId) && 
                       isValidUser(request.resource.data) && 
-                      request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName', 'photoURL']);
+                      request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName', 'photoURL', 'lastLogin']);
 
       // Cart subcollection
       match /cart/{itemId} {
