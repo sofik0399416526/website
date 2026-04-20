@@ -26,23 +26,35 @@ export const googleProvider = new GoogleAuthProvider();
 
 // Auth Functions
 export const loginWithGoogle = async () => {
+  console.log("Initiating Google Login...");
   try {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
+    console.log("Login Success:", user.email);
     
-    // Save/Update user profile
-    await setDoc(doc(db, 'users', user.uid), {
+    // Non-blocking profile update to avoid hanging the UI
+    setDoc(doc(db, 'users', user.uid), {
       uid: user.uid,
       email: user.email,
       displayName: user.displayName,
       photoURL: user.photoURL,
       lastLogin: serverTimestamp()
-    }, { merge: true });
+    }, { merge: true }).catch(err => {
+      console.warn("Firestore profile sync failed (ignore if this is a first-time setup):", err.message);
+    });
     
     return user;
-  } catch (error) {
-    console.error("Google Login Error:", error);
-    throw error;
+  } catch (error: any) {
+    console.error("Firebase Login Detailed Error:", error);
+    let message = "Login Failed: ";
+    if (error.code === 'auth/popup-blocked') {
+      message += "Popup was blocked by your browser. Please allow popups for this site.";
+    } else if (error.code === 'auth/operation-not-allowed') {
+      message += "Google login is not enabled in Firebase Console.";
+    } else {
+      message += error.message;
+    }
+    throw new Error(message);
   }
 };
 

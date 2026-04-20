@@ -99,9 +99,9 @@ function ProductCard({ product, onAdd, isAdding }: ProductCardProps) {
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -5 }}
+      transition={{ duration: 0.3 }}
       className="bg-white rounded-2xl overflow-hidden border border-emerald-50 hover:shadow-xl transition-all duration-300 flex flex-col group relative"
     >
       {product.discount && (
@@ -163,7 +163,11 @@ export default function App() {
 
   // --- Auth & Cart Listeners ---
   useEffect(() => {
-    const unsubAuth = onAuthStateChanged(auth, (u) => setUser(u));
+    console.log("App mounted. Firebase initialized.");
+    const unsubAuth = onAuthStateChanged(auth, (u) => {
+      console.log("Auth state changed:", u ? u.email : "No user");
+      setUser(u);
+    });
     return () => unsubAuth();
   }, []);
 
@@ -196,9 +200,10 @@ export default function App() {
     setIsLoggingIn(true);
     try {
       await loginWithGoogle();
-    } catch (err) {
-      console.error(err);
-      alert("Login failed. Check your connection.");
+      console.log("Login sequence completed");
+    } catch (err: any) {
+      console.error("HandleLogin Error:", err);
+      alert(err.message || "An unknown login error occurred. Please check your browser's popup settings.");
     } finally {
       setIsLoggingIn(false);
     }
@@ -274,7 +279,7 @@ export default function App() {
                     <p className="text-[10px] font-bold text-zinc-400 tracking-widest">USER</p>
                     <p className="text-xs font-black text-emerald-700 italic">{user.displayName}</p>
                  </div>
-                 <img src={user.photoURL} alt="Profile" className="w-10 h-10 rounded-xl border-2 border-emerald-100 cursor-pointer" />
+                 <img src={user.photoURL} referrerPolicy="no-referrer" alt="Profile" className="w-10 h-10 rounded-xl border-2 border-emerald-100 cursor-pointer" />
                  <button onClick={handleLogout} className="absolute top-12 right-0 bg-white border border-rose-100 text-rose-600 p-2 rounded-lg text-[10px] font-black shadow-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
                    <LogOut size={12} /> LOG OUT
                  </button>
@@ -283,9 +288,9 @@ export default function App() {
               <button 
                 onClick={handleLogin} 
                 disabled={isLoggingIn}
-                className="hidden md:flex items-center gap-2 bg-emerald-50 text-emerald-700 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-emerald-100 active:scale-95 transition-all"
+                className="flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 md:px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-emerald-100 active:scale-95 transition-all"
               >
-                {isLoggingIn ? '...' : <><User size={18} /> Login</>}
+                {isLoggingIn ? '...' : <><User size={18} className="hidden xs:block" /><span className="xs:hidden">Login</span><span className="hidden xs:inline">Login</span></>}
               </button>
             )}
 
