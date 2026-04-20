@@ -246,10 +246,24 @@ export default function App() {
   const cartTotal = useMemo(() => cartItems.reduce((a, b) => a + (b.price * b.quantity), 0), [cartItems]);
 
   return (
-    <div className="min-h-screen bg-[#fcfdfc] font-sans text-zinc-900 overflow-x-hidden">
+    <div className="min-h-screen bg-[#fcfdfc] font-sans text-zinc-900 overflow-x-hidden pt-[26px]">
+      {/* 0. Developer Info Bar (Top) */}
+      <div className="fixed top-0 left-0 right-0 z-[100] bg-emerald-950 text-emerald-50 py-1 px-4 border-b border-emerald-800/50 shadow-lg">
+        <div className="max-w-7xl mx-auto flex justify-center items-center gap-3 sm:gap-6 text-[9px] sm:text-[10px] font-black tracking-[0.3em] uppercase">
+          <div className="flex items-center gap-1.5">
+            <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse" />
+            <span>MD SOFIKUL ISLAM</span>
+          </div>
+          <div className="h-3 w-[1px] bg-emerald-800" />
+          <div className="flex items-center gap-1.5">
+            <Star size={10} className="text-emerald-400 fill-emerald-400" />
+            <span>ROLL: 3206</span>
+          </div>
+        </div>
+      </div>
       
       {/* 1. Header/Navbar */}
-      <header className={`fixed top-0 left-0 right-0 z-[60] transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md shadow-lg py-2' : 'bg-white py-4 border-b border-emerald-50'}`}>
+      <header className={`fixed top-[26px] left-0 right-0 z-[60] transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md shadow-lg py-2' : 'bg-white py-4 border-b border-emerald-50'}`}>
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between gap-4 md:gap-6">
           <div className="flex items-center gap-2 cursor-pointer shrink-0" onClick={() => { setActiveCategory('All'); setSearchQuery(''); window.scrollTo({top:0, behavior:'smooth'}); }}>
             <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg">
