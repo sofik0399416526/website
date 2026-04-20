@@ -62,7 +62,7 @@ const products = [
  * Product Card Component
  * Reusable layout for each product in the grid
  */
-function ProductCard({ product }: { product: typeof products[0], key?: any }) {
+function ProductCard({ product, isFeatured = false }: { product: typeof products[0], isFeatured?: boolean, key?: any }) {
   const handleAddToCart = () => {
     alert(`${product.name} has been added to your cart!`);
   };
@@ -70,46 +70,61 @@ function ProductCard({ product }: { product: typeof products[0], key?: any }) {
   return (
     /* Product Start */
     <motion.div 
-      whileHover={{ y: -5 }}
-      className="bg-white rounded-lg overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col group"
+      whileHover={{ y: -4, shadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
+      className={`bg-white rounded-xl border border-zinc-200 overflow-hidden transition-all duration-300 flex flex-col group ${isFeatured ? 'md:col-span-2 md:row-span-2' : ''}`}
       id={`product-${product.id}`}
     >
-      <div className="relative aspect-square overflow-hidden bg-gray-50">
+      <div className={`relative overflow-hidden bg-zinc-50 ${isFeatured ? 'aspect-video md:aspect-auto md:flex-grow' : 'aspect-square'}`}>
         <img 
           src={product.image} 
           alt={product.name}
           referrerPolicy="no-referrer"
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
         />
-        <button className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full text-gray-500 hover:text-[#f85606] transition-colors">
-          <Heart size={18} />
+        <button className="absolute top-2 right-2 p-2 bg-white/60 backdrop-blur-md rounded-lg text-zinc-400 hover:text-orange-600 transition-colors">
+          <Heart size={16} />
         </button>
+        {isFeatured && (
+          <div className="absolute top-2 left-2 bg-orange-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
+            Featured
+          </div>
+        )}
       </div>
       
-      <div className="p-4 flex flex-col flex-grow">
-        <h3 className="text-gray-800 text-sm font-medium line-clamp-2 h-10 mb-2">
-          {product.name}
-        </h3>
-        
-        <div className="flex items-center gap-1 mb-2">
-          <div className="flex text-yellow-400">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} size={12} fill={i < Math.floor(product.rating) ? "currentColor" : "none"} />
-            ))}
-          </div>
-          <span className="text-[10px] text-gray-400">({product.reviews})</span>
+      <div className="p-4 flex flex-col">
+        <div className="flex items-center justify-between gap-2 mb-1">
+          <h3 className={`font-semibold text-zinc-900 truncate ${isFeatured ? 'text-lg' : 'text-sm'}`}>
+            {product.name}
+          </h3>
+          {!isFeatured && (
+            <div className="flex items-center text-zinc-400 text-[10px]">
+              <Star size={10} className="text-orange-400 mr-0.5" fill="currentColor" />
+              {product.rating}
+            </div>
+          )}
         </div>
-
-        <div className="mt-auto">
-          <div className="text-[#f85606] font-bold text-lg mb-3">
-            ৳{product.price.toLocaleString()}
+        
+        <div className="flex items-end justify-between mt-1">
+          <div>
+            <p className="text-orange-600 font-bold text-base">
+              ৳{product.price.toLocaleString()}
+            </p>
+            {isFeatured && (
+              <div className="flex items-center gap-1 mt-1">
+                <div className="flex text-orange-400">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} size={10} fill={i < Math.floor(product.rating) ? "currentColor" : "none"} />
+                  ))}
+                </div>
+                <span className="text-[10px] text-zinc-400">({product.reviews} reviews)</span>
+              </div>
+            )}
           </div>
           <button 
             onClick={handleAddToCart}
-            className="w-full bg-[#f85606] text-white py-2 rounded font-medium text-sm hover:bg-[#d44805] transition-colors flex items-center justify-center gap-2"
+            className={`bg-orange-600 text-white rounded-lg font-bold transition-all hover:bg-orange-700 shadow-sm active:scale-95 ${isFeatured ? 'px-6 py-2.5 text-sm' : 'p-2'}`}
           >
-            <ShoppingCart size={16} />
-            Add to Cart
+            {isFeatured ? 'Add to Cart' : <ShoppingCart size={16} />}
           </button>
         </div>
       </div>
@@ -120,44 +135,40 @@ function ProductCard({ product }: { product: typeof products[0], key?: any }) {
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-[#eff0f5] font-sans" id="ecommerce-app">
+    <div className="min-h-screen bg-[#f4f4f5] font-sans antialiased text-zinc-900" id="ecommerce-app">
       {/* Header Section */}
-      <header className="bg-white sticky top-0 z-50 shadow-sm" id="header">
-        {/* Top Navbar */}
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4 md:gap-8">
+      <header className="bg-white border-b border-zinc-200 sticky top-0 z-50 h-[60px] flex items-center" id="header">
+        <div className="max-w-7xl mx-auto w-full px-8 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <button className="lg:hidden text-gray-600">
-              <Menu size={24} />
+            <button className="lg:hidden text-zinc-600">
+              <Menu size={20} />
             </button>
-            <div className="text-2xl font-black text-[#f85606] tracking-tight">
-              ShopBD
+            <div className="text-2xl font-bold text-orange-600 tracking-tight">
+              SHOPLY
             </div>
           </div>
 
-          <div className="hidden lg:flex items-center gap-8 text-sm font-medium text-gray-600">
-            <a href="#" className="hover:text-[#f85606] transition-colors">Home</a>
-            <a href="#" className="hover:text-[#f85606] transition-colors">Products</a>
-            <a href="#" className="hover:text-[#f85606] transition-colors">Contact</a>
-          </div>
+          <nav className="hidden lg:flex items-center gap-8 text-sm font-medium text-zinc-600">
+            <a href="#" className="hover:text-orange-600 transition-colors">Home</a>
+            <a href="#" className="hover:text-orange-600 transition-colors">Products</a>
+            <a href="#" className="hover:text-orange-600 transition-colors">Contact</a>
+          </nav>
 
-          <div className="flex-grow max-w-2xl relative group hidden sm:block">
-            <input 
-              type="text" 
-              placeholder="Search in ShopBD" 
-              className="w-full bg-[#eff0f5] border-none rounded-md px-4 py-2 pr-12 focus:outline-none focus:ring-1 focus:ring-[#f85606] transition-all"
-            />
-            <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#f85606] p-1.5 rounded text-white">
-              <Search size={18} />
+          <div className="flex items-center gap-4 text-zinc-600">
+            <div className="hidden sm:flex items-center bg-zinc-100 rounded-lg px-3 py-1.5 focus-within:ring-1 focus-within:ring-orange-500/20 transition-all">
+              <Search size={16} className="text-zinc-400" />
+              <input 
+                type="text" 
+                placeholder="Search..." 
+                className="bg-transparent border-none text-sm px-2 focus:outline-none w-32 md:w-48"
+              />
+            </div>
+            <button className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition-colors">
+              <User size={18} />
             </button>
-          </div>
-
-          <div className="flex items-center gap-4 md:gap-6 text-gray-600">
-            <button className="hover:text-[#f85606] transition-colors">
-              <User size={24} />
-            </button>
-            <button className="hover:text-[#f85606] transition-colors relative">
-              <ShoppingCart size={24} />
-              <span className="absolute -top-1 -right-1 bg-[#f85606] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+            <button className="w-8 h-8 bg-zinc-100 rounded-full flex items-center justify-center text-zinc-900 hover:bg-zinc-200 transition-colors relative">
+              <ShoppingCart size={16} />
+              <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
                 0
               </span>
             </button>
@@ -165,127 +176,75 @@ export default function App() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-6">
-        {/* Banner Section */}
-        <section className="mb-10" id="banner">
-          <div className="relative h-[250px] md:h-[400px] rounded-xl overflow-hidden bg-[#242424]">
-            <img 
-              src="https://picsum.photos/seed/tech/1200/400" 
-              alt="Promotion Banner" 
-              referrerPolicy="no-referrer"
-              className="w-full h-full object-cover opacity-60"
-            />
-            <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-16 text-white max-w-2xl">
-              <span className="uppercase tracking-widest text-[#f85606] font-bold text-sm mb-2">Flash Sale is Live</span>
-              <h1 className="text-3xl md:text-5xl font-bold mb-4 leading-tight">Up to 70% Off on Global Tech Gadgets!</h1>
-              <p className="text-gray-300 mb-8 hidden md:block">Experience the best quality electronics with free delivery and 7 days return policy.</p>
-              <div>
-                <button className="bg-[#f85606] text-white px-8 py-3 rounded-md font-bold hover:bg-[#d44805] transition-all transform active:scale-95 shadow-lg">
-                  Shop Now
-                </button>
-              </div>
+      <main className="max-w-7xl mx-auto px-8 py-8 space-y-6">
+        {/* Banner Section - Immersive Gradient Card */}
+        <section className="h-[180px] md:h-[240px]" id="banner">
+          <div className="w-full h-full bg-gradient-to-r from-orange-500 to-rose-500 rounded-xl flex items-center px-8 md:px-16 text-white shadow-lg relative overflow-hidden group">
+            <div className="relative z-10 w-full md:w-2/3">
+              <h1 className="text-3xl md:text-5xl font-bold mb-2 tracking-tight">Flash Sale is Live!</h1>
+              <p className="text-orange-50 opacity-90 text-sm md:text-lg mb-6">Up to 50% off on the latest tech essentials and daily upgrades.</p>
+              <button className="bg-white text-orange-600 px-6 py-2 rounded-lg font-bold text-sm hover:shadow-xl transition-all active:scale-95">
+                Explore Now
+              </button>
             </div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/3 blur-3xl group-hover:bg-white/20 transition-colors"></div>
           </div>
         </section>
 
-        {/* Product Grid Section */}
+        {/* Product Grid Section - Bento Grid Style */}
         <section id="products-grid">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-              <span className="w-1 h-6 bg-[#f85606] rounded-full inline-block"></span>
-              Featured Products
-            </h2>
-            <a href="#" className="text-[#f85606] text-sm font-semibold hover:underline">View All</a>
+            <h2 className="text-lg font-bold text-zinc-800 tracking-tight">Featured Collection</h2>
+            <div className="h-[1px] flex-grow mx-4 bg-zinc-200"></div>
+            <a href="#" className="text-orange-600 text-xs font-bold uppercase tracking-wider hover:opacity-80">View All</a>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr">
+            {products.map((product, index) => (
+              <ProductCard key={product.id} product={product} isFeatured={index === 0} />
             ))}
           </div>
         </section>
 
-        {/* Brand Highlights */}
-        <section className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6" id="highlights">
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-orange-50 flex items-center gap-4">
-            <div className="w-12 h-12 bg-orange-100 text-[#f85606] rounded-full flex items-center justify-center shrink-0">
-              <ShoppingCart size={24} />
+        {/* Brand Highlights - Compact Bento elements */}
+        <section className="grid grid-cols-1 sm:grid-cols-3 gap-4" id="highlights">
+          <div className="bg-white p-5 rounded-xl border border-zinc-200 flex items-center gap-4 hover:shadow-sm transition-shadow">
+            <div className="w-10 h-10 bg-orange-50 text-orange-600 rounded-lg flex items-center justify-center shrink-0">
+              <ShoppingCart size={20} />
             </div>
             <div>
-              <h4 className="font-bold text-gray-800">Free Delivery</h4>
-              <p className="text-xs text-gray-500">On orders over ৳1,000</p>
+              <h4 className="font-semibold text-sm text-zinc-900">Next Day Delivery</h4>
+              <p className="text-[11px] text-zinc-500 uppercase tracking-wide">For select items</p>
             </div>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-orange-50 flex items-center gap-4">
-            <div className="w-12 h-12 bg-orange-100 text-[#f85606] rounded-full flex items-center justify-center shrink-0">
-              <Star size={24} />
+          <div className="bg-white p-5 rounded-xl border border-zinc-200 flex items-center gap-4 hover:shadow-sm transition-shadow">
+            <div className="w-10 h-10 bg-orange-50 text-orange-600 rounded-lg flex items-center justify-center shrink-0">
+              <Star size={20} />
             </div>
             <div>
-              <h4 className="font-bold text-gray-800">Verified Quality</h4>
-              <p className="text-xs text-gray-500">100% genuine products</p>
+              <h4 className="font-semibold text-sm text-zinc-900">Global Warranty</h4>
+              <p className="text-[11px] text-zinc-500 uppercase tracking-wide">Authorized support</p>
             </div>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-orange-50 flex items-center gap-4">
-            <div className="w-12 h-12 bg-orange-100 text-[#f85606] rounded-full flex items-center justify-center shrink-0">
-              <Heart size={24} />
+          <div className="bg-white p-5 rounded-xl border border-zinc-200 flex items-center gap-4 hover:shadow-sm transition-shadow">
+            <div className="w-10 h-10 bg-orange-50 text-orange-600 rounded-lg flex items-center justify-center shrink-0">
+              <Heart size={20} />
             </div>
             <div>
-              <h4 className="font-bold text-gray-800">Safe Payment</h4>
-              <p className="text-xs text-gray-500">Secure transactions</p>
+              <h4 className="font-semibold text-sm text-zinc-900">Pay on Delivery</h4>
+              <p className="text-[11px] text-zinc-500 uppercase tracking-wide">Safe and secure</p>
             </div>
           </div>
         </section>
       </main>
 
       {/* Footer Section */}
-      <footer className="bg-white mt-20 border-t border-gray-200" id="footer">
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-            <div className="md:col-span-1">
-              <div className="text-2xl font-black text-[#f85606] mb-4">ShopBD</div>
-              <p className="text-sm text-gray-500 leading-relaxed">
-                The leading ecommerce marketplace in Bangladesh, bringing millions of products to your doorstep with reliability and speed.
-              </p>
-            </div>
-            <div>
-              <h5 className="font-bold text-gray-800 mb-4">Customer Care</h5>
-              <ul className="text-sm text-gray-500 space-y-2">
-                <li><a href="#" className="hover:text-[#f85606]">Help Center</a></li>
-                <li><a href="#" className="hover:text-[#f85606]">How to Buy</a></li>
-                <li><a href="#" className="hover:text-[#f85606]">Returns & Refunds</a></li>
-                <li><a href="#" className="hover:text-[#f85606]">Contact Us</a></li>
-              </ul>
-            </div>
-            <div>
-              <h5 className="font-bold text-gray-800 mb-4">ShopBD</h5>
-              <ul className="text-sm text-gray-500 space-y-2">
-                <li><a href="#" className="hover:text-[#f85606]">About Us</a></li>
-                <li><a href="#" className="hover:text-[#f85606]">Digital Payments</a></li>
-                <li><a href="#" className="hover:text-[#f85606]">Careers</a></li>
-                <li><a href="#" className="hover:text-[#f85606]">Privacy Policy</a></li>
-              </ul>
-            </div>
-            <div>
-              <h5 className="font-bold text-gray-800 mb-4">Newsletter</h5>
-              <p className="text-sm text-gray-500 mb-4">Get the latest deals and coupons.</p>
-              <div className="flex gap-2">
-                <input 
-                  type="email" 
-                  placeholder="Your Email" 
-                  className="bg-gray-50 border border-gray-200 rounded px-3 py-2 text-sm grow focus:outline-none focus:border-[#f85606]" 
-                />
-                <button className="bg-[#f85606] text-white px-4 py-2 rounded text-sm font-bold">Join</button>
-              </div>
-            </div>
-          </div>
-          
-          <div className="pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-400">
-            <p>© 2026 ShopBD Limited. All Rights Reserved.</p>
-            <div className="text-right">
-              <p className="font-medium text-gray-600">Developer Information:</p>
-              <p>Name: <span className="text-[#f85606] font-bold text-base">Mohammad Shafiqul Islam</span></p>
-              <p>Roll: <span className="font-mono text-gray-800">XXXX</span></p>
-            </div>
+      <footer className="bg-zinc-900 text-zinc-400 h-[60px] flex items-center border-t border-zinc-800" id="footer">
+        <div className="max-w-7xl mx-auto w-full px-8 flex justify-between items-center text-[11px]">
+          <div>&copy; 2026 SHOPLY Modern eCommerce.</div>
+          <div className="flex gap-8 items-center uppercase tracking-widest font-medium">
+            <span>Developer: <b className="text-zinc-200">Mohammad Shafiqul Islam</b></span>
+            <span className="bg-zinc-800 px-2 py-1 rounded">Roll: <b className="text-zinc-200">3206</b></span>
           </div>
         </div>
       </footer>
