@@ -201,7 +201,10 @@ function CheckoutModal({ product, onClose, onComplete }: { product: Product | Pr
         <div className="p-6 md:p-8 bg-emerald-900 text-white flex justify-between items-center">
           <div>
             <h2 className="text-2xl font-black italic">Swift Checkout</h2>
-            <p className="text-emerald-100/60 text-[10px] uppercase tracking-widest font-bold">Secure Order Processing</p>
+            <div className="flex items-center gap-2">
+              <p className="text-emerald-100/60 text-[10px] uppercase tracking-widest font-bold">Secure Order Processing</p>
+              {!user && <span className="bg-emerald-400/20 text-emerald-400 text-[8px] px-2 py-0.5 rounded-full font-black uppercase tracking-tighter">Guest Mode</span>}
+            </div>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors">
             <X size={24} />
@@ -407,6 +410,7 @@ export default function App() {
   };
 
   const handleBuyNow = (product: Product) => {
+    console.log("Guest Buy Now triggered for:", product.name);
     setCheckoutProduct(product);
   };
 
@@ -671,67 +675,67 @@ export default function App() {
 
         {/* 6. Popular Categories Section */}
         {activeCategory === 'All' && !searchQuery && (
-          <section className="max-w-7xl mx-auto px-4 mb-20">
-            <div className="bg-emerald-50 rounded-[3rem] p-8 md:p-16 flex flex-col md:flex-row items-center gap-12">
-              <div className="flex-1">
-                <span className="text-emerald-600 font-black text-xs uppercase tracking-widest mb-4 block">About Our Journey</span>
-                <h2 className="text-3xl md:text-5xl font-black text-emerald-900 mb-6 italic leading-tight">Fresh Market: From Farm to Your Table</h2>
-                <p className="text-zinc-600 leading-relaxed mb-8 font-medium">
-                  At Fresh Market, we believe that everyone deserves access to the freshest, highest quality groceries. 
-                  Our journey started with a simple mission: to connect local farmers directly with urban households, 
-                  ensuring that your produce is harvested at its peak and delivered with care. 
-                  We handle every item as if it were for our own family, maintaining strict quality controls and 
-                  sustainable practices.
-                </p>
-                <div className="flex flex-wrap gap-4">
-                  <div className="bg-white px-6 py-3 rounded-2xl shadow-sm flex items-center gap-3">
-                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                    <span className="text-sm font-bold text-zinc-700">100% Sustainable</span>
+          <>
+            <section className="max-w-7xl mx-auto px-4 mb-20">
+              <div className="bg-emerald-50 rounded-[3rem] p-8 md:p-16 flex flex-col md:flex-row items-center gap-12">
+                <div className="flex-1">
+                  <span className="text-emerald-600 font-black text-xs uppercase tracking-widest mb-4 block">About Our Journey</span>
+                  <h2 className="text-3xl md:text-5xl font-black text-emerald-900 mb-6 italic leading-tight">Fresh Market: From Farm to Your Table</h2>
+                  <p className="text-zinc-600 leading-relaxed mb-8 font-medium">
+                    At Fresh Market, we believe that everyone deserves access to the freshest, highest quality groceries. 
+                    Our journey started with a simple mission: to connect local farmers directly with urban households, 
+                    ensuring that your produce is harvested at its peak and delivered with care. 
+                    We handle every item as if it were for our own family, maintaining strict quality controls and 
+                    sustainable practices.
+                  </p>
+                  <div className="flex flex-wrap gap-4">
+                    <div className="bg-white px-6 py-3 rounded-2xl shadow-sm flex items-center gap-3">
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                      <span className="text-sm font-bold text-zinc-700">100% Sustainable</span>
+                    </div>
+                    <div className="bg-white px-6 py-3 rounded-2xl shadow-sm flex items-center gap-3">
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                      <span className="text-sm font-bold text-zinc-700">Direct From Farm</span>
+                    </div>
                   </div>
-                  <div className="bg-white px-6 py-3 rounded-2xl shadow-sm flex items-center gap-3">
-                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                    <span className="text-sm font-bold text-zinc-700">Direct From Farm</span>
+                </div>
+                <div className="flex-1 relative">
+                  <div className="relative z-10 rounded-[2.5rem] overflow-hidden shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500">
+                    <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1000" alt="Fresh Market Produce" className="w-full h-auto" />
+                  </div>
+                  <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-orange-400 rounded-full flex items-center justify-center text-white font-black text-center text-xs p-4 -rotate-12 translate-y-4">
+                    ESTABLISHED 2026
                   </div>
                 </div>
               </div>
-              <div className="flex-1 relative">
-                <div className="relative z-10 rounded-[2.5rem] overflow-hidden shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500">
-                  <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1000" alt="Fresh Market Produce" className="w-full h-auto" />
+            </section>
+
+            <section className="max-w-7xl mx-auto px-4 mb-20 scroll-mt-20" id="categories">
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <h2 className="text-2xl md:text-3xl font-black text-emerald-900 italic">Popular Categories</h2>
+                  <p className="text-xs text-zinc-500 font-medium">Explore what most people are picking today</p>
                 </div>
-                <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-orange-400 rounded-full flex items-center justify-center text-white font-black text-center text-xs p-4 -rotate-12 translate-y-4">
-                  ESTABLISHED 2026
-                </div>
+                <button className="text-emerald-600 font-bold text-sm flex items-center gap-1 hover:gap-2 transition-all">View All <Plus size={14} /></button>
               </div>
-            </div>
-          </section>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4">
+                {CATEGORIES.slice(1).map((cat) => (
+                  <motion.div 
+                    key={cat.id} 
+                    whileHover={{ y:-5, shadow:'0 20px 25px -5px rgb(0 0 0 / 0.1)' }} 
+                    onClick={() => setActiveCategory(cat.name)}
+                    className="bg-white p-5 rounded-3xl border border-emerald-50 text-center cursor-pointer group"
+                  >
+                    <div className="text-4xl mb-3 py-4 bg-emerald-50/50 rounded-2xl group-hover:bg-emerald-100 transition-colors">{cat.icon}</div>
+                    <h4 className="font-bold text-zinc-800 text-xs tracking-tighter">{cat.name}</h4>
+                    <p className="text-[9px] text-zinc-400 font-black uppercase mt-1 tracking-widest">{cat.count}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </section>
+          </>
         )}
 
-        {/* 6. Popular Categories Section */}
-        {activeCategory === 'All' && !searchQuery && (
-          <section className="max-w-7xl mx-auto px-4 mb-20 scroll-mt-20" id="categories">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h2 className="text-2xl md:text-3xl font-black text-emerald-900 italic">Popular Categories</h2>
-                <p className="text-xs text-zinc-500 font-medium">Explore what most people are picking today</p>
-              </div>
-              <button className="text-emerald-600 font-bold text-sm flex items-center gap-1 hover:gap-2 transition-all">View All <Plus size={14} /></button>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4">
-              {CATEGORIES.slice(1).map((cat) => (
-                <motion.div 
-                  key={cat.id} 
-                  whileHover={{ y:-5, shadow:'0 20px 25px -5px rgb(0 0 0 / 0.1)' }} 
-                  onClick={() => setActiveCategory(cat.name)}
-                  className="bg-white p-5 rounded-3xl border border-emerald-50 text-center cursor-pointer group"
-                >
-                  <div className="text-4xl mb-3 py-4 bg-emerald-50/50 rounded-2xl group-hover:bg-emerald-100 transition-colors">{cat.icon}</div>
-                  <h4 className="font-bold text-zinc-800 text-xs tracking-tighter">{cat.name}</h4>
-                  <p className="text-[9px] text-zinc-400 font-black uppercase mt-1 tracking-widest">{cat.count}</p>
-                </motion.div>
-              ))}
-            </div>
-          </section>
-        )}
 
         {/* 4. Featured Products Section */}
         <section className="max-w-7xl mx-auto px-4 mb-20 scroll-mt-20">
