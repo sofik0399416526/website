@@ -49,7 +49,9 @@ export const loginWithGoogle = async () => {
     console.error("Firebase Login Detailed Error:", error);
     let message = "Login Failed: ";
     if (error.code === 'auth/popup-blocked') {
-      message += "Popup was blocked by your browser. Please allow popups for this site.";
+      message += "Popup was blocked. Please allow popups for this site or try clicking the login button again.";
+    } else if (error.code === 'auth/unauthorized-domain') {
+      message += "This domain is not authorized in your Firebase Console. Please add '" + window.location.hostname + "' to the 'Authorized Domains' list in Firebase Authentication settings.";
     } else if (error.code === 'auth/operation-not-allowed') {
       message += "Google login is not enabled in Firebase Console.";
     } else {

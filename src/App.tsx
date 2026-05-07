@@ -406,7 +406,12 @@ export default function App() {
       console.log("Login sequence completed");
     } catch (err: any) {
       console.error("HandleLogin Error:", err);
-      alert(err.message || "An unknown login error occurred. Please check your browser's popup settings.");
+      // More descriptive alert for domain issues
+      if (err.message.includes('unauthorized-domain')) {
+        alert("Domain Not Authorized: " + err.message + "\n\nPlease add this domain to the 'Authorized Domains' list in Firebase Authentication settings.");
+      } else {
+        alert(err.message || "An unknown login error occurred. Please check your browser's popup settings.");
+      }
     } finally {
       setIsLoggingIn(false);
     }
