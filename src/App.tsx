@@ -162,6 +162,7 @@ function ProductCard({ product, onAdd, onBuyNow, isAdding }: ProductCardProps) {
 
 function CheckoutModal({ product, user, onLogin, onClose, onComplete }: { product: Product | Product[], user: any, onLogin: () => void, onClose: () => void, onComplete: () => void }) {
   const [step, setStep] = useState(1);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -174,13 +175,37 @@ function CheckoutModal({ product, user, onLogin, onClose, onComplete }: { produc
   const deliveryFee = 60;
   const total = subtotal + deliveryFee;
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (step === 1) setStep(2);
     else {
-      // Logic for actual order processing would go here
-      alert("Order placed successfully!");
-      onComplete();
+      setIsProcessing(true);
+      try {
+        const response = await fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderDetails: {
+              items: items.map(item => ({ name: item.name, price: item.price, quantity: item.quantity || 1 })),
+              total: total
+            },
+            customerInfo: formData
+          })
+        });
+
+        const result = await response.json();
+        
+        if (response.ok) {
+          alert(result.message || "Order placed successfully!");
+          onComplete();
+        } else {
+          throw new Error(result.error || "Failed to process order");
+        }
+      } catch (err: any) {
+        alert(err.message || "An error occurred while placing your order.");
+      } finally {
+        setIsProcessing(false);
+      }
     }
   };
 
@@ -312,9 +337,18 @@ function CheckoutModal({ product, user, onLogin, onClose, onComplete }: { produc
 
             <button 
               type="submit"
-              className="w-full bg-emerald-600 text-white py-4 rounded-2xl font-black text-lg hover:bg-emerald-700 shadow-xl shadow-emerald-600/20 transition-all active:scale-95"
+              disabled={isProcessing}
+              className={`w-full py-4 rounded-2xl font-black text-lg shadow-xl shadow-emerald-600/20 transition-all active:scale-95 flex items-center justify-center gap-3 ${isProcessing ? 'bg-zinc-400 cursor-not-allowed text-zinc-100' : 'bg-emerald-600 hover:bg-emerald-700 text-white'}`}
             >
-              {step === 1 ? 'Go to Payment' : 'Confirm Order'}
+              {isProcessing ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:-0.3s]" />
+                  <div className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:-0.15s]" />
+                  <div className="w-2 h-2 bg-white rounded-full animate-bounce" />
+                </div>
+              ) : (
+                step === 1 ? 'Go to Payment' : 'Confirm Order'
+              )}
             </button>
           </form>
         </div>
