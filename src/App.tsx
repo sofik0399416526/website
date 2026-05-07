@@ -160,7 +160,7 @@ function ProductCard({ product, onAdd, onBuyNow, isAdding }: ProductCardProps) {
   );
 }
 
-function CheckoutModal({ product, onClose, onComplete }: { product: Product | Product[], onClose: () => void, onComplete: () => void }) {
+function CheckoutModal({ product, user, onLogin, onClose, onComplete }: { product: Product | Product[], user: any, onLogin: () => void, onClose: () => void, onComplete: () => void }) {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: '',
@@ -203,7 +203,15 @@ function CheckoutModal({ product, onClose, onComplete }: { product: Product | Pr
             <h2 className="text-2xl font-black italic">Swift Checkout</h2>
             <div className="flex items-center gap-2">
               <p className="text-emerald-100/60 text-[10px] uppercase tracking-widest font-bold">Secure Order Processing</p>
-              {!user && <span className="bg-emerald-400/20 text-emerald-400 text-[8px] px-2 py-0.5 rounded-full font-black uppercase tracking-tighter">Guest Mode</span>}
+              {!user && (
+                <button 
+                  onClick={onLogin}
+                  className="bg-emerald-400/20 hover:bg-emerald-400/30 text-emerald-400 text-[8px] px-2 py-0.5 rounded-full font-black uppercase tracking-tighter transition-colors flex items-center gap-1"
+                >
+                  <div className="w-1 h-1 bg-emerald-400 rounded-full animate-pulse" />
+                  Sign in with Google
+                </button>
+              )}
             </div>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors">
@@ -551,9 +559,15 @@ export default function App() {
               <button 
                 onClick={handleLogin} 
                 disabled={isLoggingIn}
-                className="flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 md:px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-emerald-100 active:scale-95 transition-all"
+                className="flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 md:px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-emerald-100 active:scale-95 transition-all border border-emerald-100"
               >
-                {isLoggingIn ? '...' : <><User size={18} className="hidden xs:block" /><span className="xs:hidden">Login</span><span className="hidden xs:inline">Login</span></>}
+                {isLoggingIn ? '...' : (
+                  <>
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/smartlock/google.svg" className="w-4 h-4" alt=""/>
+                    <span className="hidden sm:inline">Sign in with Google</span>
+                    <span className="sm:hidden">Login</span>
+                  </>
+                )}
               </button>
             )}
 
@@ -620,6 +634,8 @@ export default function App() {
         {checkoutProduct && (
           <CheckoutModal 
             product={checkoutProduct} 
+            user={user}
+            onLogin={handleLogin}
             onClose={() => setCheckoutProduct(null)} 
             onComplete={() => setCheckoutProduct(null)} 
           />
