@@ -61,43 +61,94 @@ export const loginWithGoogle = async () => {
 
 export const logout = () => signOut(auth);
 
+// --- Improved Firestore Error Handling ---
+enum OperationType {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+  LIST = 'list',
+  GET = 'get',
+  WRITE = 'write',
+}
+
+interface FirestoreErrorInfo {
+  error: string;
+  operationType: OperationType;
+  path: string | null;
+  authInfo: {
+    userId?: string | null;
+    email?: string | null;
+    emailVerified?: boolean | null;
+  }
+}
+
+const handleFirestoreError = (error: unknown, operationType: OperationType, path: string | null) => {
+  const errInfo: FirestoreErrorInfo = {
+    error: error instanceof Error ? error.message : String(error),
+    authInfo: {
+      userId: auth.currentUser?.uid,
+      email: auth.currentUser?.email,
+      emailVerified: auth.currentUser?.emailVerified,
+    },
+    operationType,
+    path
+  };
+  console.error('Firestore Error: ', JSON.stringify(errInfo));
+  throw new Error(JSON.stringify(errInfo));
+};
+
 // Cart Functions
 export const addToCart = async (userId: string, product: { id: number, name: string, price: number, image: string }) => {
-  const cartRef = collection(db, 'users', userId, 'cart');
-  const q = query(cartRef, where('productId', '==', product.id));
-  const querySnapshot = await getDocs(q);
+  const cartPath = `users/${userId}/cart`;
+  try {
+    const cartRef = collection(db, 'users', userId, 'cart');
+    const q = query(cartRef, where('productId', '==', product.id));
+    const querySnapshot = await getDocs(q);
 
-  if (!querySnapshot.empty) {
-    // Update quantity if already in cart
-    const docRef = doc(db, 'users', userId, 'cart', querySnapshot.docs[0].id);
-    await updateDoc(docRef, {
-      quantity: increment(1)
-    });
-  } else {
-    // Add new item
-    await addDoc(cartRef, {
-      productId: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.image,
-      quantity: 1,
-      userId: userId,
-      addedAt: serverTimestamp()
-    });
+    if (!querySnapshot.empty) {
+      // Update quantity if already in cart
+      const docRef = doc(db, 'users', userId, 'cart', querySnapshot.docs[0].id);
+      await updateDoc(docRef, {
+        quantity: increment(1)
+      });
+    } else {
+      // Add new item
+      await addDoc(cartRef, {
+        productId: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.image,
+        quantity: 1,
+        userId: userId,
+        addedAt: serverTimestamp()
+      });
+    }
+  } catch (error) {
+    handleFirestoreError(error, OperationType.WRITE, cartPath);
   }
 };
 
 export const removeFromCart = async (userId: string, itemId: string) => {
-  await deleteDoc(doc(db, 'users', userId, 'cart', itemId));
+  const path = `users/${userId}/cart/${itemId}`;
+  try {
+    await deleteDoc(doc(db, 'users', userId, 'cart', itemId));
+  } catch (error) {
+    handleFirestoreError(error, OperationType.DELETE, path);
+  }
 };
 
 export const updateCartQuantity = async (userId: string, itemId: string, newQuantity: number) => {
-  if (newQuantity <= 0) {
-    await removeFromCart(userId, itemId);
-  } else {
-    await updateDoc(doc(db, 'users', userId, 'cart', itemId), {
-      quantity: newQuantity
-    });
+  const path = `users/${userId}/cart/${itemId}`;
+  try {
+    if (newQuantity <= 0) {
+      await removeFromCart(userId, itemId);
+    } else {
+      await updateDoc(doc(db, 'users', userId, 'cart', itemId), {
+        quantity: newQuantity
+      });
+    }
+  } catch (error) {
+    handleFirestoreError(error, OperationType.UPDATE, path);
   }
 };
 

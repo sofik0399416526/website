@@ -216,7 +216,7 @@ export default function App() {
 
   const handleAddToCart = async (product: Product) => {
     if (!user) {
-      alert("Please login first!");
+      alert("Please login first to add items to your cart!");
       handleLogin();
       return;
     }
@@ -228,8 +228,20 @@ export default function App() {
         price: product.price,
         image: product.image
       });
-    } catch (err) {
-      console.error(err);
+      // Optional: Add a small toast or vibration here if possible, 
+      // but for now, the cart count update is the visual cue.
+    } catch (err: any) {
+      console.error("Cart Error:", err);
+      try {
+        const errorDetail = JSON.parse(err.message);
+        if (errorDetail.error.includes("permission-denied")) {
+          alert("Error: You don't have permission to update the cart. Please make sure your Firebase Security Rules are deployed and your database is created.");
+        } else {
+          alert("Cart Error: " + errorDetail.error);
+        }
+      } catch {
+        alert("Failed to add to cart: " + err.message);
+      }
     } finally {
       setAddingId(null);
     }
@@ -270,7 +282,7 @@ export default function App() {
               <Leaf size={24} fill="white" />
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-xl font-black text-emerald-800 tracking-tighter italic">FreshMarket</h1>
+              <h1 className="text-xl font-black text-emerald-800 tracking-tighter italic">Fresh Market</h1>
               <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Premium Grocery</p>
             </div>
           </div>
@@ -566,7 +578,7 @@ export default function App() {
            </div>
 
            <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-              <p className="text-[10px] text-emerald-100/20 font-black uppercase tracking-[3px]">© 2026 FreshMarket Limited. Built for Quality.</p>
+              <p className="text-[10px] text-emerald-100/20 font-black uppercase tracking-[3px]">© 2026 Fresh Market Limited. Built for Quality.</p>
               <div className="flex items-center gap-4 grayscale opacity-20">
                  <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Bkash_logo.png" className="h-5" alt=""/>
                  <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" className="h-6" alt=""/>
