@@ -283,7 +283,7 @@ function CheckoutModal({ product, onClose, onComplete }: { product: Product | Pr
                 {formData.paymentMethod === 'bkash' && (
                   <div className="bg-[#D12053]/5 border border-[#D12053]/20 p-4 rounded-2xl space-y-2">
                     <p className="text-[10px] text-[#D12053] font-black uppercase tracking-widest">Payment Instruction</p>
-                    <p className="text-xs text-[#D12053] italic">Please send ৳{total} to 01700-000000 and enter the transaction ID below.</p>
+                    <p className="text-xs text-[#D12053] italic">Please send ৳{total} to 01739709780 and enter the transaction ID below.</p>
                     <input 
                       placeholder="Transaction ID (e.g. 8A5B7C9D)"
                       className="w-full bg-white border border-[#D12053]/20 p-3 rounded-xl focus:ring-2 focus:ring-[#D12053] outline-none text-sm uppercase"
@@ -407,11 +407,6 @@ export default function App() {
   };
 
   const handleBuyNow = (product: Product) => {
-    if (!user) {
-      alert("Please login first to purchase!");
-      handleLogin();
-      return;
-    }
     setCheckoutProduct(product);
   };
 
