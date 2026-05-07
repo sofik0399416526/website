@@ -193,16 +193,25 @@ function CheckoutModal({ product, user, onLogin, onClose, onComplete }: { produc
           })
         });
 
-        const result = await response.json();
+        const contentType = response.headers.get("content-type");
+        let result;
+        
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+          result = await response.json();
+        } else {
+          const text = await response.text();
+          console.error("Received non-JSON response:", text);
+          throw new Error("Server error: Received unexpected response format. Please check server logs.");
+        }
         
         if (response.ok) {
-          alert(result.message || "Order placed successfully!");
+          alert(result.message || "অর্ডার সফলভাবে সম্পন্ন হয়েছে!");
           onComplete();
         } else {
-          throw new Error(result.error || "Failed to process order");
+          throw new Error(result.error || "অর্ডার প্রক্রিয়াকরণ করতে ব্যর্থ হয়েছে");
         }
       } catch (err: any) {
-        alert(err.message || "An error occurred while placing your order.");
+        alert(err.message || "অর্ডার করার সময় একটি ত্রুটি ঘটেছে। পুনরায় চেষ্টা করুন।");
       } finally {
         setIsProcessing(false);
       }
