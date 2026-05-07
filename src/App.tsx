@@ -428,6 +428,43 @@ export default function App() {
 
         {/* 6. Popular Categories Section */}
         {activeCategory === 'All' && !searchQuery && (
+          <section className="max-w-7xl mx-auto px-4 mb-20">
+            <div className="bg-emerald-50 rounded-[3rem] p-8 md:p-16 flex flex-col md:flex-row items-center gap-12">
+              <div className="flex-1">
+                <span className="text-emerald-600 font-black text-xs uppercase tracking-widest mb-4 block">About Our Journey</span>
+                <h2 className="text-3xl md:text-5xl font-black text-emerald-900 mb-6 italic leading-tight">Fresh Market: From Farm to Your Table</h2>
+                <p className="text-zinc-600 leading-relaxed mb-8 font-medium">
+                  At Fresh Market, we believe that everyone deserves access to the freshest, highest quality groceries. 
+                  Our journey started with a simple mission: to connect local farmers directly with urban households, 
+                  ensuring that your produce is harvested at its peak and delivered with care. 
+                  We handle every item as if it were for our own family, maintaining strict quality controls and 
+                  sustainable practices.
+                </p>
+                <div className="flex flex-wrap gap-4">
+                  <div className="bg-white px-6 py-3 rounded-2xl shadow-sm flex items-center gap-3">
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                    <span className="text-sm font-bold text-zinc-700">100% Sustainable</span>
+                  </div>
+                  <div className="bg-white px-6 py-3 rounded-2xl shadow-sm flex items-center gap-3">
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                    <span className="text-sm font-bold text-zinc-700">Direct From Farm</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex-1 relative">
+                <div className="relative z-10 rounded-[2.5rem] overflow-hidden shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500">
+                  <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1000" alt="Fresh Market Produce" className="w-full h-auto" />
+                </div>
+                <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-orange-400 rounded-full flex items-center justify-center text-white font-black text-center text-xs p-4 -rotate-12 translate-y-4">
+                  ESTABLISHED 2026
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 6. Popular Categories Section */}
+        {activeCategory === 'All' && !searchQuery && (
           <section className="max-w-7xl mx-auto px-4 mb-20 scroll-mt-20" id="categories">
             <div className="flex items-center justify-between mb-8">
               <div>
@@ -512,7 +549,7 @@ export default function App() {
         <section className="bg-emerald-900 py-20 relative overflow-hidden">
            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-800 rounded-full translate-x-1/2 -translate-y-1/2 opacity-20 blur-3xl"></div>
            <div className="max-w-7xl mx-auto px-4 relative z-10 text-center">
-              <h2 className="text-3xl md:text-5xl font-black text-white italic mb-12 drop-shadow-md tracking-tighter">Why Shop from FreshMarket?</h2>
+              <h2 className="text-3xl md:text-5xl font-black text-white italic mb-12 drop-shadow-md tracking-tighter">Why Shop from Fresh Market?</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
                  {[
                    { Icon: Truck, t: "Fast Delivery", d: "Same day shipping in Dhaka" },
@@ -540,9 +577,9 @@ export default function App() {
               <div className="col-span-1 md:col-span-1">
                  <div className="flex items-center gap-2 mb-6">
                     <Leaf size={32} className="text-emerald-400" />
-                    <h1 className="text-2xl font-black italic">FreshMarket</h1>
+                    <h1 className="text-2xl font-black italic">Fresh Market</h1>
                  </div>
-                 <p className="text-emerald-100/40 text-sm italic mb-8">Bringing farm freshness directly to your home with world-class logistics and quality check.</p>
+                 <p className="text-emerald-100/40 text-sm italic mb-8">Fresh Market provides premium, farm-to-table groceries with a focus on quality, sustainability, and supporting our local agricultural community.</p>
                  <div className="flex gap-4">
                     {[Facebook, Twitter, Instagram, Youtube].map((Icon, i) => (
                       <a key={i} href="#" className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center hover:bg-emerald-600 transition-all"><Icon size={20}/></a>
